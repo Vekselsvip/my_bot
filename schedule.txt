@@ -1,0 +1,10 @@
+Front-End Pro, 01.11.2022
+Front-End Start, 12.10.2022
+Web Design Pro, 19.12.2022
+Web Design Start, 11.10.2022
+Python Start, 09.08.2022
+Python Pro, 09.09.2022
+Java Start, 22.07.2022
+Java Pro, 20.08.2022
+QA Start, 28.06.2022
+QA Pro, 25.07.2022
