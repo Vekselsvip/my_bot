@@ -84,7 +84,7 @@ def get_courses_info(message):
         bot.send_message(message.chat.id, "i don't understand you")
 
 
-@app.route('/' + TOKEN, methods=['POST'])
+@app.route('/' + str(TOKEN), methods=['POST'])
 def get_message():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "Python Telegram Bot 25-11-2022", 200
