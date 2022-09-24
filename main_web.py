@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 TOKEN = os.environ.get('TOKEN')
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot('5416512263:AAFvQ7A8kR1AyqQN15IO4BWkOgqYaEzLBXA')
 
 with open('courses.txt') as file:
     courses = [item.split(',') for item in file]
@@ -106,77 +106,34 @@ title = ''
 
 @bot.message_handler(commands=['start'])
 def start(message):
-        markup = types.ReplyKeyboardMarkup()
-        new_route = types.KeyboardButton('/start')
-        markup.add(new_route)
-        bot.send_message(message.chat.id,
-                         f"привет {message.from_user.first_name},\nПо братски напиши от куда и куда едешь ?",
-                         reply_markup=markup)
-        bot.register_next_step_handler(message, km)
+    markup = types.ReplyKeyboardMarkup()
+    new_route = types.KeyboardButton('/start')
+    markup.add(new_route)
+    bot.send_message(message.chat.id,
+                     f"привет {message.from_user.first_name},\nПо братски напиши от куда и куда едешь ?",
+                     reply_markup=markup)
+    bot.register_next_step_handler(message, km)
+
 
 def km(message):
+    if str(message.text).upper() in my_dict:
         global title
-        title = message.text
+        title = str(message.text).upper()
         bot.send_message(message.chat.id, f"Сколько км тулить?")
         bot.register_next_step_handler(message, my_calc)
+    else:
+        bot.send_message(message.chat.id, f"not sure the route is correct\ntry again")
+        exit()
+
 
 def my_calc(message):
+    if str(message.text).isdigit():
         res = my_dict[f'{title}'] * float(message.text)
-        bot.send_message(message.chat.id, f'ну где-то {res}')
-
-
-@bot.message_handler(commands=['help'])
-def message_help(message):
-    bot.send_message(message.chat.id, '/courses - types of courses \n/schedule - course schedule')
-
-
-@bot.message_handler(commands=['courses'])
-def message_courses(message):
-    keyboard = telebot.types.InlineKeyboardMarkup(row_width=1)
-
-    for text, url in courses:
-        url_button = telebot.types.InlineKeyboardButton(text=text.strip(), url=url.strip(' \n'))
-        keyboard.add(url_button)
-
-    bot.send_message(message.chat.id, 'A list of courses: ', reply_markup=keyboard)
-
-
-@bot.message_handler(commands=['schedule'])
-def message_schedule(message):
-    res = 'Schedule of courses\n\n'
-
-    for category in courses_plan:
-        for item in courses_plan[category]:
-            title, date = item.split(',')
-            res += f'<b>{title}</b>: <code>{date}</code>'
-        res += '\n'
-
-    bot.send_message(message.chat.id, text=res, parse_mode='HTML')
-
-
-@bot.message_handler(func=lambda x: x.text.startswith('info'))
-def get_courses_info(message):
-    tex_from_user = message.json['text']
-    if 'python' in tex_from_user:
-        res = ''
-        for category in courses_plan:
-            for item in courses_plan[category]:
-                title, date = item.split(',')
-                if 'python' in title.lower():
-                    res += f'<b>{title}</b>: <code>{date}</code>'
-        res += '\n'
-        bot.send_message(message.chat.id, text=res, parse_mode='HTML')
-    elif 'java' in tex_from_user:
-        res = ''
-        for category in courses_plan:
-            for item in courses_plan[category]:
-                title, date = item.split(',')
-                if 'java' in title.lower():
-                    res += f'<b>{title}</b>: <code>{date}</code>'
-        res += '\n'
-        bot.send_message(message.chat.id, text=res, parse_mode='HTML')
+        bot.send_message(message.chat.id, f'{title} - {my_dict[f"{title}"]}\n{my_dict[f"{title}"]} * '
+                                          f'{float(message.text)} = {res}')
     else:
-        bot.send_message(message.chat.id, "i don't understand you")
+        bot.send_message(message.chat.id, f"try again")
+        exit()
 
 
 @app.route('/' + TOKEN, methods=['POST'])
@@ -188,7 +145,7 @@ def get_message():
 @app.route('/')
 def main():
     bot.remove_webhook()
-    bot.set_webhook(url='https://intense-woodland-68195.herokuapp.com/' + TOKEN)
+    bot.set_webhook(url='https://first-my-bot.herokuapp.com/' + TOKEN)
     return "Python Telegram Bot", 200
 
 
