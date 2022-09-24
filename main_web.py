@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 TOKEN = os.environ.get('TOKEN')
-bot = telebot.TeleBot('5416512263:AAFvQ7A8kR1AyqQN15IO4BWkOgqYaEzLBXA')
+bot = telebot.TeleBot(TOKEN)
 
 with open('courses.txt') as file:
     courses = [item.split(',') for item in file]
